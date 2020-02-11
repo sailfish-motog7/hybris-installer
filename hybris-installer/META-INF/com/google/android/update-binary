@@ -61,7 +61,7 @@ invalid_device && CURRENT_DEVICE=`getprop ro.build.product`
 mount | grep -q "/data.*ext4" || abort 3 "Data is NOT formatted as ext4; check out 'Wipe > Advanced' from TWRP!"
 
 # Treble
-if [ $TARGET_DEVICE == "enchilada" ] | [ $TARGET_DEVICE = "fajita" ]; then # TWRP on these devices doesn't handle system_is_root properly, need to fix it up manually
+if [ $TARGET_DEVICE == "enchilada" ] || [ $TARGET_DEVICE = "fajita" ]; then # TWRP on these devices doesn't handle system_is_root properly, need to fix it up manually
 	log "Device is system-as-root, ensuring /system_root and /system are mounted correctly"
 	umount /system
 	umount /system_root
