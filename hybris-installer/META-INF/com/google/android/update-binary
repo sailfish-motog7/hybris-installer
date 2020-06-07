@@ -142,7 +142,7 @@ log "Extracting SFOS rootfs..."
 ARCHIVE="$FILES/sfos-rootfs.tar.bz2"
 rm -rf $ROOT/
 mkdir -p $ROOT/
-/system/bin/toybox tar --numeric-ownder -xjf $ARCHIVE -C $ROOT/ || abort 10 "Couldn't extract SFOS rootfs!"
+/system/bin/toybox tar --numeric-owner -xjf $ARCHIVE -C $ROOT/ || abort 10 "Couldn't extract SFOS rootfs!"
 rm $ARCHIVE
 
 log "Cloning /persist from Android to prevent issues with WiFi when dual booting"
