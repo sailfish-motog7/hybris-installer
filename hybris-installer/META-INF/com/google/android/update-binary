@@ -54,7 +54,7 @@ PARTITION_PERSIST="$PARTITION_PREFIX/persist"
 	(mount | grep -q "/cache.*ext4" || abort 1 "Cache is NOT formatted as ext4; check out 'Wipe > Advanced' from TWRP!") ||
 	log "Couldn't mount /cache! Is this an A/B device by any chance?"
 (mount | grep -q /data || mount /data) || abort 2 "Couldn't mount /data; running e2fsck and rebooting may help."
-mount | grep -q "/data.*ext4" || abort 3 "Data is NOT formatted as ext4; check out 'Wipe > Advanced' from TWRP!"
+mount | grep -q -e "/data.*ext4" -e "/data.*f2fs" || abort 3 "Data is NOT formatted as ext4; check out 'Wipe > Advanced' from TWRP!"
 
 # Treble
 [ -r $PARTITION_VENDOR ] || abort 4 "A vendor partition doesn't exist; you need to do an OTA from OxygenOS 5.1.5 to 5.1.6!"
@@ -140,10 +140,6 @@ sed -e "/extraenv/s/^/#/g" -e "/import \/init.\${ro.hardware}.rc/s/^/#/" -e "/ro
     -e "s/\/cpus\ /\/cpuset.cpus /g" -e "s/\/cpus$/\/cpuset.cpus/g" -e "s/\/mems\ /\/cpuset.mems /g" -e "s/\/mems$/\/cpuset.mems/g" \
     -i $ROOT/init.rc || log "Couldn't fix-up init script!"
 rm $ROOT/init.extraenv.armeabi-v7a.rc
-
-log "Fixing up sensors service permissions..."
-(umount /vendor &> /dev/null; mount -o rw /vendor && cp $FILES/init.qcom.rc /vendor/etc/init/hw/) || log "Couldn't fix-up sensors service"
-umount /vendor &
 
 log "Disabling forced encryption in vendor fstab..."
 (umount /vendor &> /dev/null; mount -o rw /vendor && sed "s/fileencryption/encryptable/" -i /vendor/etc/fstab.qcom) || log "Couldn't disable forced encryption!"
