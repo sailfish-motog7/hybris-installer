@@ -60,7 +60,7 @@ mount | grep -q -e "/data.*ext4" -e "/data.*f2fs" || abort 3 "Data is NOT format
 [ -r $PARTITION_VENDOR ] || abort 4 "A vendor partition doesn't exist; you need to do an OTA from OxygenOS 5.1.5 to 5.1.6!"
 
 # Android
-(mount | grep -q /system || mount /system) || abort 5 "Couldn't mount /system!"
+(mount | grep -q /system_root || mount /system_root) || abort 5 "Couldn't mount /system!"
 if [ `cat /system/build.prop | grep lineage.build.version= | cut -d'=' -f2` != "$TARGET_LOS_VER" ]; then
 	if [ ! -f /tmp/sfos_flash_confirm ]; then
 		touch /tmp/sfos_flash_confirm
@@ -132,7 +132,7 @@ log "Extracting SFOS rootfs..."
 ARCHIVE="$FILES/sfos-rootfs.tar.bz2"
 rm -rf $ROOT/
 mkdir -p $ROOT/
-/system/bin/toybox tar -xj -f $ARCHIVE -C $ROOT/ || abort 10 "Couldn't extract SFOS rootfs!"
+LD_PRELOAD=/system_root/system/lib64/libbz.so PATH=$PATH:/system_root/system/bin/ /system/bin/toybox tar -xj -f $ARCHIVE -C $ROOT/ || abort 10 "Couldn't extract SFOS rootfs!"
 rm $ARCHIVE
 
 log "Fixing up init scripts..."
