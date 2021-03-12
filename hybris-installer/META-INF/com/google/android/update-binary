@@ -61,7 +61,7 @@ mount | grep -q -e "/data.*ext4" -e "/data.*f2fs" || abort 3 "Data is NOT format
 
 # Android
 (mount | grep -q /system_root || mount /system_root) || abort 5 "Couldn't mount /system!"
-if [ `cat /system/build.prop | grep lineage.build.version= | cut -d'=' -f2` != "$TARGET_LOS_VER" ]; then
+if [ `cat /system_root/system/build.prop | grep lineage.build.version= | cut -d'=' -f2` != "$TARGET_LOS_VER" ]; then
 	if [ ! -f /tmp/sfos_flash_confirm ]; then
 		touch /tmp/sfos_flash_confirm
 		abort 6 "If you don't know what you're doing: please factory reset & dirty flash LineageOS $TARGET_LOS_VER before this zip. Otherwise reflash again to confirm force flashing of SFOS."
@@ -132,7 +132,7 @@ log "Extracting SFOS rootfs..."
 ARCHIVE="$FILES/sfos-rootfs.tar.bz2"
 rm -rf $ROOT/
 mkdir -p $ROOT/
-LD_PRELOAD=/system_root/system/lib64/libbz.so PATH=$PATH:/system_root/system/bin/ /system/bin/toybox tar -xj -f $ARCHIVE -C $ROOT/ || abort 10 "Couldn't extract SFOS rootfs!"
+$FILES/toybox tar -xj -f $ARCHIVE -C $ROOT/ || abort 10 "Couldn't extract SFOS rootfs!"
 rm $ARCHIVE
 
 log "Fixing up init scripts..."
